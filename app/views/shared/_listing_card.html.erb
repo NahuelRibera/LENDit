@@ -1,0 +1,35 @@
+<%# locals: (listing:) %>
+<% owner = listing.user %>
+<%= link_to listing_path(listing), class: "listing-card" do %>
+  <div class="listing-card__media">
+    <% if (image = listing.primary_image) && image.file.attached? %>
+      <%= image_tag image.file.variant(resize_to_fill: [400, 300]), class: "listing-card__image", alt: listing.title %>
+    <% else %>
+      <%= icon("image", size: 28) %>
+    <% end %>
+    <% if listing.created_at > 14.days.ago %>
+      <%= render "shared/status_badge", label: "New", tone: :new, html_class: "listing-card__badge" %>
+    <% end %>
+  </div>
+
+  <div class="listing-card__body">
+    <div class="listing-card__row">
+      <h3 class="listing-card__title"><%= listing.title %></h3>
+      <p class="listing-card__price"><%= format_price(listing.price_cents) %><span class="listing-card__price-unit">/day</span></p>
+    </div>
+
+    <p class="listing-card__location">
+      <%= icon("map-pin", size: 14) %>
+      <%= listing.city %>
+    </p>
+
+    <div class="listing-card__owner">
+      <%= render "shared/avatar",
+            name: owner.full_name,
+            image_url: (owner.avatar.attached? ? url_for(owner.avatar.variant(resize_to_fill: [48, 48])) : nil),
+            size: :xs %>
+      <span class="listing-card__owner-name"><%= owner.full_name %></span>
+      <%= render "shared/rating", rating: owner.ratings_avg, reviews_count: owner.ratings_count, size: :xs %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,11 @@
+<%# locals: (object:) %>
+<% if object.errors.any? %>
+  <div class="form-errors">
+    <p class="form-errors__title"><%= pluralize(object.errors.count, "error") %> prevented this from being saved:</p>
+    <ul>
+      <% object.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

@@ -1,0 +1,73 @@
+<% content_for :title, "Edit #{@listing.title} — LENDit" %>
+
+<div class="container section listing-form-page">
+  <div class="listing-form-page__header">
+    <h1 class="section__title">Edit listing</h1>
+    <%= render "shared/status_badge", label: @listing.status.capitalize, tone: listing_status_tone(@listing.status) %>
+  </div>
+
+  <div class="listing-status-panel">
+    <% if @listing.draft? %>
+      <p>This listing is a draft — only you can see it. Publish it once it has at least one photo.</p>
+      <%= button_to "Publish", listing_status_path(@listing), method: :patch, params: { transition: "publish" }, class: "btn btn--primary btn--sm" %>
+    <% elsif @listing.published? %>
+      <p>This listing is live and visible in the marketplace.</p>
+      <%= button_to "Pause", listing_status_path(@listing), method: :patch, params: { transition: "pause" }, class: "btn btn--secondary btn--sm" %>
+      <%= button_to "Archive", listing_status_path(@listing), method: :patch, params: { transition: "archive" }, class: "btn btn--ghost btn--sm", form: { data: { turbo_confirm: "Archive this listing? It will no longer be bookable." } } %>
+    <% elsif @listing.paused? %>
+      <p>This listing is paused and hidden from the marketplace.</p>
+      <%= button_to "Reactivate", listing_status_path(@listing), method: :patch, params: { transition: "reactivate" }, class: "btn btn--primary btn--sm" %>
+      <%= button_to "Archive", listing_status_path(@listing), method: :patch, params: { transition: "archive" }, class: "btn btn--ghost btn--sm", form: { data: { turbo_confirm: "Archive this listing? It will no longer be bookable." } } %>
+    <% else %>
+      <p>This listing is archived and no longer bookable.</p>
+    <% end %>
+  </div>
+
+  <section class="listing-photos-section">
+    <h2 class="listing-form-page__subheading">Photos</h2>
+
+    <% if @listing.listing_images.any? %>
+      <div class="listing-photos">
+        <% @listing.listing_images.ordered.each do |image| %>
+          <div class="listing-photo-card">
+            <div class="listing-photo-card__media">
+              <% if image.file.attached? %>
+                <%= image_tag image.file.variant(resize_to_fill: [300, 225]), class: "listing-photo-card__image", alt: @listing.title %>
+              <% end %>
+              <% if image.is_primary? %>
+                <%= render "shared/status_badge", label: "Primary", tone: :new, html_class: "listing-photo-card__badge" %>
+              <% end %>
+            </div>
+            <div class="listing-photo-card__actions">
+              <%= button_to "Move up", listing_image_path(@listing, image), method: :patch, params: { move: "up" }, class: "listing-photo-card__btn" %>
+              <%= button_to "Move down", listing_image_path(@listing, image), method: :patch, params: { move: "down" }, class: "listing-photo-card__btn" %>
+              <% unless image.is_primary? %>
+                <%= button_to "Make primary", listing_image_path(@listing, image), method: :patch, params: { make_primary: "1" }, class: "listing-photo-card__btn" %>
+              <% end %>
+              <%= button_to "Remove", listing_image_path(@listing, image), method: :delete, class: "listing-photo-card__btn listing-photo-card__btn--danger", form: { data: { turbo_confirm: "Remove this photo?" } } %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <%= render "shared/empty_state",
+            icon_name: "image",
+            title: "No photos yet",
+            description: "Listings with real photos get booked far more often." %>
+    <% end %>
+
+    <%= form_with url: listing_images_path(@listing), method: :post, multipart: true, class: "listing-photos-upload" do %>
+      <div class="field">
+        <label class="field__label" for="listing_image_files">Add photos</label>
+        <span class="field__help">PNG, JPEG, or WEBP — up to 8MB each</span>
+        <input type="file" id="listing_image_files" name="listing_image[files][]" class="input" accept="image/png,image/jpeg,image/webp" multiple>
+      </div>
+      <%= button_tag "Upload", type: "submit", class: "btn btn--secondary btn--sm" %>
+    <% end %>
+  </section>
+
+  <section class="listing-form-page__details">
+    <h2 class="listing-form-page__subheading">Details</h2>
+    <%= render "form", listing: @listing %>
+  </section>
+</div>

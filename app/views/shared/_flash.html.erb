@@ -1,0 +1,13 @@
+<% if flash.any? %>
+  <div class="container flash-container">
+    <% flash.each do |type, message| %>
+      <% tone = { "notice" => "success", "alert" => "danger", "error" => "danger" }[type.to_s] || "neutral" %>
+      <div class="flash flash--<%= tone %>" data-controller="flash" role="status">
+        <span class="flash__message"><%= message %></span>
+        <button type="button" class="flash__close" data-action="flash#dismiss" aria-label="Dismiss">
+          <%= icon("close", size: 16) %>
+        </button>
+      </div>
+    <% end %>
+  </div>
+<% end %>

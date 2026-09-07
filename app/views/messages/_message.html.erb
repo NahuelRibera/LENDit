@@ -1,0 +1,6 @@
+<%# locals: (message:) %>
+<div class="message-bubble" data-sender-id="<%= message.sender_id %>" data-chat-target="message" id="message_<%= message.id %>">
+  <span class="message-bubble__sender"><%= message.sender.first_name %></span>
+  <p class="message-bubble__body"><%= message.body %></p>
+  <span class="message-bubble__time"><%= message.created_at.strftime("%b %-d, %H:%M") %></span>
+</div>

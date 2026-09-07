@@ -1,0 +1,28 @@
+<%# locals: (pagy:) %>
+<% if pagy.pages > 1 %>
+  <nav class="pagination" aria-label="Pagination">
+    <% if pagy.prev %>
+      <%= link_to "Previous", pagy_url_for(pagy, pagy.prev), class: "pagination__link" %>
+    <% else %>
+      <span class="pagination__link pagination__link--disabled">Previous</span>
+    <% end %>
+
+    <div class="pagination__pages">
+      <% pagy.series.each do |item| %>
+        <% if item.is_a?(Integer) %>
+          <%= link_to item, pagy_url_for(pagy, item), class: "pagination__page" %>
+        <% elsif item == :gap %>
+          <span class="pagination__gap">&hellip;</span>
+        <% else %>
+          <span class="pagination__page pagination__page--current"><%= item %></span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if pagy.next %>
+      <%= link_to "Next", pagy_url_for(pagy, pagy.next), class: "pagination__link" %>
+    <% else %>
+      <span class="pagination__link pagination__link--disabled">Next</span>
+    <% end %>
+  </nav>
+<% end %>

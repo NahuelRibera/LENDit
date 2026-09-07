@@ -1,0 +1,41 @@
+<%# locals: (rental:, role:) — role is :lender or :borrower %>
+<% other = role == :lender ? rental.borrower : rental.lender %>
+<div class="rental-row">
+  <%= link_to rental_path(rental), class: "rental-row__media" do %>
+    <% if (image = rental.listing.primary_image) && image.file.attached? %>
+      <%= image_tag image.file.variant(resize_to_fill: [96, 72]), alt: rental.listing.title %>
+    <% else %>
+      <%= icon("image", size: 20) %>
+    <% end %>
+  <% end %>
+
+  <div class="rental-row__body">
+    <%= link_to rental.listing.title, rental_path(rental), class: "rental-row__title" %>
+    <p class="rental-row__meta">
+      <%= role == :lender ? "Borrower" : "Owner" %>: <%= link_to other.full_name, user_path(other) %>
+    </p>
+    <p class="rental-row__dates">
+      <%= rental.start_date.strftime("%b %-d") %> – <%= rental.end_date.strftime("%b %-d, %Y") %>
+      · <%= pluralize(rental.rental_days, "day") %>
+    </p>
+  </div>
+
+  <div class="rental-row__price"><%= format_price(rental.total_price_cents) %></div>
+
+  <%= render "shared/status_badge", label: rental.status.capitalize, tone: rental_status_tone(rental.status) %>
+
+  <div class="rental-row__actions">
+    <% if rental.pending? && role == :lender %>
+      <%= button_to "Accept", rental_acceptance_path(rental), method: :post, class: "btn btn--primary btn--sm" %>
+      <%= button_to "Decline", rental_decline_path(rental), method: :post, class: "btn btn--ghost btn--sm",
+            form: { data: { turbo_confirm: "Decline this request?" } } %>
+    <% elsif rental.pending? && role == :borrower %>
+      <%= button_to "Withdraw", rental_cancellation_path(rental), method: :post, class: "btn btn--ghost btn--sm",
+            form: { data: { turbo_confirm: "Withdraw this request?" } } %>
+    <% elsif rental.accepted? && rental.start_date.future? %>
+      <%= button_to "Cancel", rental_cancellation_path(rental), method: :post, class: "btn btn--ghost btn--sm",
+            form: { data: { turbo_confirm: "Cancel this booking?" } } %>
+    <% end %>
+    <%= link_to "View", rental_path(rental), class: "btn btn--secondary btn--sm" %>
+  </div>
+</div>

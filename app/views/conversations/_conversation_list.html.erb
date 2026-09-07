@@ -1,0 +1,30 @@
+<%# locals: (conversations:, active_conversation:) %>
+<aside class="conversation-list <%= "conversation-list--hidden-on-mobile" if active_conversation %>">
+  <h1 class="conversation-list__title">Messages</h1>
+
+  <% if conversations.any? %>
+    <% conversations.each do |conversation| %>
+      <% other = conversation.other_participant(current_user) %>
+      <% last_message = conversation.messages.last %>
+      <%= link_to conversation_path(conversation),
+            class: ["conversation-row", ("is-active" if conversation == active_conversation), ("is-unread" if conversation.unread_for?(current_user))].compact.join(" ") do %>
+        <%= render "shared/avatar",
+              name: other.full_name,
+              image_url: (other.avatar.attached? ? url_for(other.avatar.variant(resize_to_fill: [64, 64])) : nil),
+              size: :sm %>
+        <div class="conversation-row__body">
+          <p class="conversation-row__name"><%= other.full_name %></p>
+          <p class="conversation-row__listing"><%= conversation.listing.title %></p>
+          <% if last_message %>
+            <p class="conversation-row__preview"><%= truncate(last_message.body, length: 40) %></p>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= render "shared/empty_state",
+          icon_name: "image",
+          title: "No messages yet",
+          description: "Message a listing owner to start a conversation." %>
+  <% end %>
+</aside>

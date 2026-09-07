@@ -33,7 +33,7 @@ gem "jbuilder"
 # gem "kredis"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -42,11 +42,22 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.2"
+
+# Authorization policies (ownership/participant checks across listings, rentals,
+# conversations, reviews, notifications) — see docs in app/policies.
+gem "pundit"
+
+# Lightweight pagination for listing/search results. Pinned to the 6.x line's
+# well-documented, stable Backend/Frontend API (later majors rewrote it).
+gem "pagy", "~> 6.0"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
+
+  # Realistic seed data (names, text) without lorem ipsum.
+  gem "faker"
 end
 
 group :development do
@@ -60,7 +71,17 @@ group :development do
   # gem "spring"
 end
 
+# Rails 7.1's internals (MessageVerifier/session cookies, generates_token_for)
+# call the `json` gem with a `quirks_mode:` keyword that json 3.x removed;
+# pin to the 2.x line Ruby 3.3 actually bundles.
+gem "json", "~> 2.7"
+
 group :test do
+  # Rails 7.1's test runner (rails/test_unit) is incompatible with the
+  # Minitest 6.x `Minitest.run` signature change; pin to the 5.x line
+  # it was actually written against.
+  gem "minitest", "~> 5.25"
+
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"

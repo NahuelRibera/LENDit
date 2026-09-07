@@ -1,0 +1,36 @@
+pending_request:
+  listing: vive
+  borrower: elena
+  lender: marti
+  start_date: <%= 10.days.from_now.to_date %>
+  end_date: <%= 12.days.from_now.to_date %>
+  status: pending
+  daily_price_cents: 2200
+  total_price_cents: 6600
+  requested_at: <%= 2.days.ago %>
+
+accepted_booking:
+  listing: canon
+  borrower: marti
+  lender: elena
+  start_date: <%= 5.days.from_now.to_date %>
+  end_date: <%= 7.days.from_now.to_date %>
+  status: accepted
+  daily_price_cents: 5000
+  total_price_cents: 15000
+  requested_at: <%= 3.days.ago %>
+  accepted_at: <%= 2.days.ago %>
+
+completed_rental:
+  listing: tent
+  borrower: nahuel
+  lender: elena
+  start_date: <%= 10.days.ago.to_date %>
+  end_date: <%= 8.days.ago.to_date %>
+  status: completed
+  daily_price_cents: 1500
+  total_price_cents: 4500
+  requested_at: <%= 12.days.ago %>
+  accepted_at: <%= 11.days.ago %>
+  started_at: <%= 10.days.ago %>
+  completed_at: <%= 7.days.ago %>

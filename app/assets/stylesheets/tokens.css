@@ -1,0 +1,110 @@
+/*
+ * LENDit v2 design tokens.
+ *
+ * Brand colors are sampled directly from the original LENDit logo
+ * (docs/reference/00-logo.png): deep teal #007883 and bright mint #01c2ad.
+ * Everything else in this file is derived from those two colors plus a
+ * warm neutral scale, so the rest of the app inherits the original
+ * identity rather than a new arbitrary palette.
+ */
+
+:root {
+  /* Brand */
+  --color-brand: #007883;
+  --color-brand-hover: #045f68;
+  --color-brand-active: #034952;
+  --color-brand-subtle: #e3f1f2;
+  --color-accent: #01c2ad;
+  --color-accent-hover: #00a692;
+  --color-accent-subtle: #e0f7f3;
+
+  /* Neutrals */
+  --color-text: #1f2328;
+  --color-text-muted: #6b7280;
+  --color-text-faint: #9ca3af;
+  --color-text-inverse: #ffffff;
+  --color-border: #e4e4e7;
+  --color-border-strong: #d1d5db;
+  --color-surface: #ffffff;
+  --color-page-bg: #faf9f8;
+  --color-overlay: rgba(17, 24, 28, 0.48);
+
+  /* Status */
+  --color-success: #01c2ad;
+  --color-success-subtle: #e0f7f3;
+  --color-success-text: #036b5e;
+  --color-warning: #b8710f;
+  --color-warning-subtle: #fbf0df;
+  --color-danger: #c4432b;
+  --color-danger-subtle: #fbe8e4;
+  --color-new: #007883;
+  --color-new-subtle: #e3f1f2;
+
+  --color-focus-ring: #007883;
+
+  /* Typography */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+  --text-4xl: 2.5rem;
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-normal: 1.55;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Spacing (4px base unit) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 999px;
+
+  /* Shadows (used sparingly, only for genuinely elevated elements) */
+  --shadow-sm: 0 1px 2px rgba(17, 24, 28, 0.06);
+  --shadow-md: 0 8px 24px rgba(17, 24, 28, 0.10);
+  --shadow-lg: 0 16px 40px rgba(17, 24, 28, 0.16);
+
+  /* Layout */
+  --container-max: 1280px;
+  --container-pad: var(--space-4);
+
+  /* Motion */
+  --transition-fast: 120ms ease;
+  --transition-base: 180ms ease;
+}
+
+/* Breakpoints (documented here; @media queries can't read custom properties,
+   so these values are duplicated as raw px in each stylesheet):
+   sm: 480px, md: 768px, lg: 1024px, xl: 1280px */
+
+@media (min-width: 768px) {
+  :root {
+    --container-pad: var(--space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --container-pad: var(--space-8);
+  }
+}

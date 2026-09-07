@@ -1,0 +1,133 @@
+<% content_for :title, "#{@listing.title} — LENDit" %>
+
+<div class="container section">
+  <% unless @listing.published? %>
+    <div class="listing-preview-notice">
+      Only you can see this listing — it's currently <strong><%= @listing.status %></strong>.
+      <%= link_to "Edit listing", edit_listing_path(@listing) %>
+    </div>
+  <% end %>
+
+  <div class="listing-detail" data-controller="gallery">
+    <div class="listing-gallery">
+      <div class="listing-gallery__main">
+        <% if (primary = @listing.primary_image) && primary.file.attached? %>
+          <%= image_tag primary.file.variant(resize_to_limit: [1200, 900]),
+                data: { gallery_target: "main" }, class: "listing-gallery__main-image", alt: @listing.title %>
+        <% else %>
+          <div class="listing-gallery__placeholder"><%= icon("image", size: 40) %></div>
+        <% end %>
+      </div>
+
+      <% if @listing.listing_images.size > 1 %>
+        <div class="listing-gallery__thumbs">
+          <% @listing.listing_images.ordered.each_with_index do |image, index| %>
+            <% next unless image.file.attached? %>
+            <button type="button" class="listing-gallery__thumb <%= "is-active" if index.zero? %>"
+                    data-action="gallery#select"
+                    data-full-url="<%= url_for(image.file.variant(resize_to_limit: [1200, 900])) %>"
+                    data-gallery-target="thumb">
+              <%= image_tag image.file.variant(resize_to_fill: [120, 90]), alt: "" %>
+            </button>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="listing-detail__panel">
+      <h1 class="listing-detail__title"><%= @listing.title %></h1>
+
+      <div class="listing-detail__chips">
+        <%= render "shared/status_badge", label: @listing.category.name, tone: :neutral %>
+        <%= render "shared/status_badge", label: @listing.condition_label, tone: :neutral %>
+      </div>
+
+      <p class="listing-detail__price"><%= format_price(@listing.price_cents) %><span class="listing-card__price-unit">/day</span></p>
+
+      <%= link_to user_path(@listing.user), class: "listing-detail__owner" do %>
+        <%= render "shared/avatar",
+              name: @listing.user.full_name,
+              image_url: (@listing.user.avatar.attached? ? url_for(@listing.user.avatar.variant(resize_to_fill: [64, 64])) : nil),
+              size: :sm %>
+        <span class="listing-detail__owner-info">
+          <strong><%= @listing.user.full_name %></strong>
+          <%= render "shared/rating", rating: @listing.user.ratings_avg, reviews_count: @listing.user.ratings_count, size: :xs %>
+        </span>
+      <% end %>
+
+      <p class="listing-detail__location"><%= icon("map-pin", size: 14) %> <%= @listing.city %></p>
+
+      <% if current_user == @listing.user %>
+        <div class="booking-panel">
+          <p class="booking-panel__owner-note">This is your listing — borrowers see a booking form here instead.</p>
+          <div class="booking-panel__owner-actions">
+            <%= link_to "Edit listing", edit_listing_path(@listing), class: "btn btn--secondary btn--block" %>
+            <%= link_to "View incoming requests", account_lends_path, class: "btn btn--ghost btn--block" %>
+          </div>
+        </div>
+      <% elsif @listing.published? %>
+        <div class="booking-panel" data-controller="booking-form" data-booking-form-price-cents-value="<%= @listing.price_cents %>">
+          <% if @unavailable_ranges.any? %>
+            <p class="booking-panel__unavailable">
+              <strong>Unavailable:</strong>
+              <%= @unavailable_ranges.map { |s, e| s == e ? s.strftime("%b %-d") : "#{s.strftime('%b %-d')}–#{e.strftime('%b %-d')}" }.join(", ") %>
+            </p>
+          <% end %>
+
+          <% if !signed_in? %>
+            <%= link_to "Log in to request this item", new_session_path, class: "btn btn--primary btn--block" %>
+          <% else %>
+            <%= button_to "Message owner", listing_conversation_path(@listing), method: :post,
+                  class: "btn btn--secondary btn--block booking-panel__message-btn" %>
+
+            <%= form_with url: listing_rentals_path(@listing), class: "booking-panel__form" do %>
+              <div class="field-row">
+                <div class="field">
+                  <label class="field__label" for="rental_start_date">Start date</label>
+                  <input type="date" name="rental[start_date]" id="rental_start_date" class="input"
+                         min="<%= Date.current %>" data-booking-form-target="start"
+                         data-action="change->booking-form#startChanged">
+                </div>
+                <div class="field">
+                  <label class="field__label" for="rental_end_date">End date</label>
+                  <input type="date" name="rental[end_date]" id="rental_end_date" class="input"
+                         min="<%= Date.current %>" data-booking-form-target="end"
+                         data-action="change->booking-form#update">
+                </div>
+              </div>
+
+              <div class="booking-panel__summary" data-booking-form-target="summary" hidden>
+                <div class="booking-panel__summary-row">
+                  <span data-booking-form-target="days"></span>
+                  <span data-booking-form-target="total"></span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn--primary btn--block" data-booking-form-target="submit" disabled>
+                Request to book
+              </button>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="listing-detail__description">
+      <h2 class="listing-form-page__subheading">Description</h2>
+      <p><%= simple_format(@listing.description) %></p>
+    </div>
+  </div>
+
+  <% if @related_listings.any? %>
+    <section class="section">
+      <div class="section__header">
+        <h2 class="section__title">More in <%= @listing.category.name %></h2>
+      </div>
+      <div class="grid-cards">
+        <% @related_listings.each do |listing| %>
+          <%= render "shared/listing_card", listing: listing %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+</div>

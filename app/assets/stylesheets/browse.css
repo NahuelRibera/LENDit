@@ -1,0 +1,116 @@
+.browse-filters-toggle {
+  display: inline-flex;
+}
+
+@media (min-width: 1024px) {
+  .browse-filters-toggle {
+    display: none;
+  }
+}
+
+.browse-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+
+@media (min-width: 1024px) {
+  .browse-layout {
+    grid-template-columns: 260px 1fr;
+    align-items: start;
+  }
+}
+
+.browse-filters {
+  display: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  background: var(--color-surface);
+}
+
+.browse-filters.is-open {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .browse-filters {
+    display: block;
+    position: sticky;
+    top: calc(72px + var(--space-4));
+  }
+}
+
+.browse-filters__form .field {
+  margin-bottom: var(--space-4);
+}
+
+.browse-filters__clear {
+  display: block;
+  text-align: center;
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.browse-filters__clear:hover {
+  color: var(--color-brand);
+  text-decoration: underline;
+}
+
+.browse-results__count {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+.pagination__pages {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.pagination__link {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-brand);
+  padding: var(--space-2) var(--space-3);
+}
+
+.pagination__link--disabled {
+  color: var(--color-text-faint);
+}
+
+.pagination__page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.pagination__page:hover {
+  background: var(--color-page-bg);
+}
+
+.pagination__page--current {
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+  font-weight: var(--weight-semibold);
+}
+
+.pagination__gap {
+  color: var(--color-text-faint);
+  padding: 0 var(--space-1);
+}

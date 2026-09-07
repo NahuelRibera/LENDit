@@ -13,3 +13,13 @@ module ActiveSupport
     # Add more helper methods to be used by all tests here...
   end
 end
+
+module SignInHelper
+  # Integration-test helper: signs in as the given user by posting to the
+  # real session endpoint, so tests exercise the same path a browser would.
+  def sign_in_as(user, password: "password123")
+    post session_url, params: { email: user.email, password: password }
+  end
+end
+
+ActionDispatch::IntegrationTest.include SignInHelper

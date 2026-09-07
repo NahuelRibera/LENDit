@@ -1,0 +1,8 @@
+<%# locals: (rating:, reviews_count: nil, size: :sm) %>
+<span class="rating rating--<%= size %>">
+  <%= icon("star", css_class: "rating__star") %>
+  <span class="rating__value"><%= number_with_precision(rating, precision: 1) %></span>
+  <% if reviews_count %>
+    <span class="rating__count">(<%= reviews_count %>)</span>
+  <% end %>
+</span>

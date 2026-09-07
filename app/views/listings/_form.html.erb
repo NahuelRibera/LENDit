@@ -1,0 +1,40 @@
+<%= render "shared/form_errors", object: listing %>
+
+<%= form_with model: listing, class: "listing-form" do |f| %>
+  <div class="field">
+    <%= f.label :title, class: "field__label" %>
+    <%= f.text_field :title, class: "input", required: true, placeholder: "e.g. Canon xA60 4K camera" %>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <%= f.label :category_id, "Category", class: "field__label" %>
+      <%= f.collection_select :category_id, Category.active.ordered, :id, :name, { prompt: "Select a category" }, class: "select", required: true %>
+    </div>
+    <div class="field">
+      <%= f.label :condition, class: "field__label" %>
+      <%= f.select :condition,
+            Listing::CONDITIONS.map { |c| [c.tr("_", " ").capitalize, c] },
+            { prompt: "Select a condition" }, class: "select", required: true %>
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <%= f.label :price, "Price per day (€)", class: "field__label" %>
+      <%= f.text_field :price, class: "input", inputmode: "decimal", required: true, placeholder: "e.g. 25" %>
+    </div>
+    <div class="field">
+      <%= f.label :city, class: "field__label" %>
+      <%= f.text_field :city, class: "input", required: true, placeholder: "e.g. Barcelona" %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= f.label :description, class: "field__label" %>
+    <span class="field__help">What is it, what's included, and anything a borrower should know.</span>
+    <%= f.text_area :description, class: "textarea", required: true, maxlength: 4000 %>
+  </div>
+
+  <%= f.submit (listing.new_record? ? "Create listing" : "Save changes"), class: "btn btn--primary" %>
+<% end %>

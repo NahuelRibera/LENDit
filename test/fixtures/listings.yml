@@ -1,0 +1,59 @@
+vive:
+  user: marti
+  category: consoles
+  title: HTC Vive 2
+  description: Experience the future of virtual reality. Includes both controllers and base stations.
+  price_cents: 2200
+  condition: like_new
+  status: published
+  city: Barcelona
+
+canon:
+  user: elena
+  category: cameras
+  title: Canon xA60 4K
+  description: Professional 4K camcorder, great for events and interviews. Comes with an extra battery and a padded case.
+  price_cents: 5000
+  condition: good
+  status: published
+  city: Madrid
+
+draft_drone:
+  user: marti
+  category: cameras
+  title: Mavic 3 Drone
+  description: Barely used drone with extra batteries and ND filters.
+  price_cents: 4000
+  condition: like_new
+  status: draft
+  city: Barcelona
+
+paused_bike:
+  user: elena
+  category: sports
+  title: Electric Dirtbike
+  description: Fun off-road electric dirtbike, great for trails.
+  price_cents: 12500
+  condition: good
+  status: paused
+  city: Madrid
+
+tent:
+  user: elena
+  category: sports
+  title: Camping Tent 4-person
+  description: Spacious 4-person tent, easy setup, fully waterproof.
+  price_cents: 1500
+  condition: good
+  status: published
+  city: Madrid
+
+guitar:
+  user: nahuel
+  category: music
+  title: Acoustic Guitar
+  description: Great beginner acoustic guitar with a soft carrying case.
+  price_cents: 1000
+  condition: fair
+  status: published
+  city: Valencia

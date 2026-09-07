@@ -1,0 +1,112 @@
+<% content_for :title, "Rental — #{@rental.listing.title} — LENDit" %>
+<% is_borrower = current_user == @rental.borrower %>
+<% other_party = is_borrower ? @rental.lender : @rental.borrower %>
+
+<div class="container section rental-detail">
+  <div class="section__header">
+    <h1 class="section__title">Rental request</h1>
+    <%= render "shared/status_badge", label: @rental.status.capitalize, tone: rental_status_tone(@rental.status) %>
+  </div>
+
+  <div class="rental-detail__card">
+    <%= link_to listing_path(@rental.listing), class: "rental-detail__listing" do %>
+      <div class="rental-detail__listing-media">
+        <% if (image = @rental.listing.primary_image) && image.file.attached? %>
+          <%= image_tag image.file.variant(resize_to_fill: [160, 120]), alt: @rental.listing.title %>
+        <% else %>
+          <%= icon("image", size: 24) %>
+        <% end %>
+      </div>
+      <div>
+        <p class="rental-detail__listing-title"><%= @rental.listing.title %></p>
+        <p class="rental-detail__listing-meta">
+          <%= @rental.start_date.strftime("%b %-d") %> – <%= @rental.end_date.strftime("%b %-d, %Y") %>
+          · <%= pluralize(@rental.rental_days, "day") %>
+        </p>
+      </div>
+    <% end %>
+
+    <div class="rental-detail__pricing">
+      <div class="rental-detail__pricing-row">
+        <span><%= format_price(@rental.daily_price_cents) %>/day &times; <%= @rental.rental_days %></span>
+        <span><%= format_price(@rental.total_price_cents) %></span>
+      </div>
+      <div class="rental-detail__pricing-row rental-detail__pricing-row--total">
+        <span><%= is_borrower ? "Total" : "You receive" %></span>
+        <span><%= format_price(@rental.total_price_cents) %></span>
+      </div>
+    </div>
+
+    <div class="rental-detail__party-row">
+      <%= link_to user_path(other_party), class: "rental-detail__party" do %>
+        <%= render "shared/avatar",
+              name: other_party.full_name,
+              image_url: (other_party.avatar.attached? ? url_for(other_party.avatar.variant(resize_to_fill: [64, 64])) : nil),
+              size: :sm %>
+        <span>
+          <strong><%= other_party.full_name %></strong>
+          <span class="rental-detail__role"><%= is_borrower ? "Owner" : "Borrower" %></span>
+        </span>
+      <% end %>
+      <%= button_to "Message #{is_borrower ? "owner" : "borrower"}", listing_conversation_path(@rental.listing),
+            method: :post, class: "btn btn--secondary btn--sm" %>
+    </div>
+
+    <% if @rental.pending? && !is_borrower %>
+      <div class="rental-detail__actions">
+        <%= button_to "Accept", rental_acceptance_path(@rental), method: :post, class: "btn btn--primary" %>
+        <%= button_to "Decline", rental_decline_path(@rental), method: :post, class: "btn btn--ghost",
+              form: { data: { turbo_confirm: "Decline this request?" } } %>
+      </div>
+    <% elsif @rental.pending? && is_borrower %>
+      <div class="rental-detail__actions">
+        <%= button_to "Withdraw request", rental_cancellation_path(@rental), method: :post, class: "btn btn--ghost",
+              form: { data: { turbo_confirm: "Withdraw this request?" } } %>
+      </div>
+    <% elsif @rental.accepted? && @rental.start_date.future? %>
+      <div class="rental-detail__actions">
+        <%= button_to "Cancel booking", rental_cancellation_path(@rental), method: :post, class: "btn btn--ghost",
+              form: { data: { turbo_confirm: "Cancel this booking?" } } %>
+      </div>
+    <% end %>
+
+    <% if @rental.cancellation_reason.present? && (@rental.cancelled? || @rental.declined?) %>
+      <p class="rental-detail__reason"><%= @rental.cancellation_reason %></p>
+    <% end %>
+  </div>
+
+  <div class="rental-detail__timeline">
+    <h2 class="listing-form-page__subheading">Status</h2>
+    <ul class="timeline">
+      <li class="timeline__step is-complete">
+        <span class="timeline__label">Requested</span>
+        <span class="timeline__time"><%= @rental.requested_at.strftime("%b %-d, %Y") %></span>
+      </li>
+
+      <% if @rental.declined? %>
+        <li class="timeline__step is-complete is-negative">
+          <span class="timeline__label">Declined</span>
+          <span class="timeline__time"><%= @rental.declined_at&.strftime("%b %-d, %Y") %></span>
+        </li>
+      <% elsif @rental.cancelled? %>
+        <li class="timeline__step is-complete is-negative">
+          <span class="timeline__label">Cancelled</span>
+          <span class="timeline__time"><%= @rental.cancelled_at&.strftime("%b %-d, %Y") %></span>
+        </li>
+      <% else %>
+        <li class="timeline__step <%= "is-complete" if @rental.accepted_at %>">
+          <span class="timeline__label">Accepted</span>
+          <span class="timeline__time"><%= @rental.accepted_at&.strftime("%b %-d, %Y") %></span>
+        </li>
+        <li class="timeline__step <%= "is-complete" if @rental.started_at %>">
+          <span class="timeline__label">Active</span>
+          <span class="timeline__time"><%= @rental.started_at&.strftime("%b %-d, %Y") %></span>
+        </li>
+        <li class="timeline__step <%= "is-complete" if @rental.completed_at %>">
+          <span class="timeline__label">Completed</span>
+          <span class="timeline__time"><%= @rental.completed_at&.strftime("%b %-d, %Y") %></span>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

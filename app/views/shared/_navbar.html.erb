@@ -1,0 +1,81 @@
+<header class="navbar" data-controller="mobile-menu">
+  <div class="navbar__row navbar__row--primary">
+    <div class="container navbar__inner">
+      <button type="button" class="navbar__menu-btn" data-action="mobile-menu#toggle"
+              aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+        <%= icon("menu") %>
+      </button>
+
+      <%= link_to root_path, class: "navbar__brand", "aria-label": "LENDit home" do %>
+        <%= image_tag "logo.png", alt: "LENDit", class: "navbar__logo" %>
+      <% end %>
+
+      <%= form_with url: listings_path, method: :get, role: "search", class: "navbar__search" do %>
+        <span class="navbar__search-icon"><%= icon("search", size: 18) %></span>
+        <input type="search" name="q" value="<%= params[:q] %>" class="navbar__search-input" placeholder="Search for items" aria-label="Search for items">
+      <% end %>
+
+      <div class="navbar__actions">
+        <% if signed_in? %>
+          <%= link_to conversations_path, class: "navbar__icon-link notification-bell", "aria-label": "Messages" do %>
+            <%= icon("message-circle", size: 20) %>
+            <% if unread_messages_count > 0 %><span class="notification-bell__badge"><%= unread_messages_count %></span><% end %>
+          <% end %>
+          <%= link_to notifications_path, class: "navbar__icon-link notification-bell", "aria-label": "Notifications" do %>
+            <%= icon("bell", size: 20) %>
+            <% if unread_notifications_count > 0 %><span class="notification-bell__badge"><%= unread_notifications_count %></span><% end %>
+          <% end %>
+          <%= link_to "List an item", new_listing_path, class: "btn btn--secondary btn--sm" %>
+          <div class="navbar__user-menu" data-controller="dropdown">
+            <button type="button" class="navbar__user-trigger" data-action="dropdown#toggle" aria-haspopup="true" aria-expanded="false" aria-label="Account menu">
+              <%= render "shared/avatar",
+                    name: current_user.full_name,
+                    image_url: (current_user.avatar.attached? ? url_for(current_user.avatar.variant(resize_to_fill: [64, 64])) : nil),
+                    size: :sm %>
+            </button>
+            <div class="navbar__user-dropdown" data-dropdown-target="panel">
+              <%= link_to "My profile", user_path(current_user) %>
+              <%= link_to "My products", account_listings_path %>
+              <%= link_to "My lends", account_lends_path %>
+              <%= link_to "My borrows", account_borrows_path %>
+              <%= link_to "Account settings", edit_account_profile_path %>
+              <%= button_to "Sign out", session_path, method: :delete, class: "navbar__user-dropdown-signout", form: { data: { turbo_confirm: nil } } %>
+            </div>
+          </div>
+        <% else %>
+          <%= link_to "Log in", new_session_path, class: "btn btn--ghost btn--sm" %>
+          <%= link_to "Get started", new_registration_path, class: "btn btn--primary btn--sm" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile-menu" data-mobile-menu-target="panel" id="mobile-menu">
+    <div class="mobile-menu__section">
+      <% if signed_in? %>
+        <%= link_to "List an item", new_listing_path, class: "btn btn--primary btn--block", data: { action: "mobile-menu#close" } %>
+        <%= link_to "Messages#{" (#{unread_messages_count})" if unread_messages_count > 0}", conversations_path, class: "btn btn--secondary btn--block", data: { action: "mobile-menu#close" } %>
+        <%= link_to "Notifications#{" (#{unread_notifications_count})" if unread_notifications_count > 0}", notifications_path, class: "btn btn--secondary btn--block", data: { action: "mobile-menu#close" } %>
+        <%= link_to "My lends", account_lends_path, class: "btn btn--secondary btn--block", data: { action: "mobile-menu#close" } %>
+        <%= link_to "My borrows", account_borrows_path, class: "btn btn--secondary btn--block", data: { action: "mobile-menu#close" } %>
+        <%= link_to "My products", account_listings_path, class: "btn btn--secondary btn--block", data: { action: "mobile-menu#close" } %>
+        <%= link_to "My profile", user_path(current_user), class: "btn btn--secondary btn--block", data: { action: "mobile-menu#close" } %>
+        <%= link_to "Account settings", edit_account_profile_path, class: "btn btn--ghost btn--block", data: { action: "mobile-menu#close" } %>
+        <%= button_to "Sign out", session_path, method: :delete, class: "btn btn--ghost btn--block" %>
+      <% else %>
+        <%= link_to "Get started", new_registration_path, class: "btn btn--primary btn--block", data: { action: "mobile-menu#close" } %>
+        <%= link_to "Log in", new_session_path, class: "btn btn--ghost btn--block", data: { action: "mobile-menu#close" } %>
+      <% end %>
+    </div>
+    <ul class="mobile-menu__categories">
+      <% nav_categories.each do |category| %>
+        <li>
+          <%= link_to category_path(category.slug), data: { action: "mobile-menu#close" } do %>
+            <%= icon(category.icon_key, size: 18) %>
+            <%= category.name %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</header>

@@ -1,0 +1,28 @@
+<% content_for :title, "Notifications — LENDit" %>
+
+<div class="container section">
+  <div class="section__header">
+    <h1 class="section__title">Notifications</h1>
+    <% if @notifications.any?(&:unread?) %>
+      <%= button_to "Mark all as read", notifications_read_all_path, method: :post, class: "btn btn--secondary btn--sm" %>
+    <% end %>
+  </div>
+
+  <% if @notifications.any? %>
+    <ul class="notification-list">
+      <% @notifications.each do |notification| %>
+        <li class="notification-row <%= "is-unread" unless notification.read? %>">
+          <%= link_to notification_read_path(notification), data: { turbo_method: :post }, class: "notification-row__link" do %>
+            <span class="notification-row__message"><%= notification.message %></span>
+            <span class="notification-row__time"><%= time_ago_in_words(notification.created_at) %> ago</span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <%= render "shared/empty_state",
+          icon_name: "image",
+          title: "No notifications yet",
+          description: "Activity on your rentals and messages will show up here." %>
+  <% end %>
+</div>

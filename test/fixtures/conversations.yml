@@ -1,0 +1,4 @@
+vive_thread:
+  listing: vive
+  user_one_id: <%= [ActiveRecord::FixtureSet.identify(:marti), ActiveRecord::FixtureSet.identify(:elena)].min %>
+  user_two_id: <%= [ActiveRecord::FixtureSet.identify(:marti), ActiveRecord::FixtureSet.identify(:elena)].max %>

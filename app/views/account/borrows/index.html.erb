@@ -1,0 +1,27 @@
+<% content_for :title, "My Borrows — LENDit" %>
+
+<div class="container section">
+  <h1 class="section__title">My Borrows</h1>
+
+  <div class="status-tabs">
+    <% Account::BorrowsController::STATUS_TABS.each do |status| %>
+      <%= link_to account_borrows_path(status: status), class: "status-tabs__tab #{"is-active" if @status == status}" do %>
+        <%= status.capitalize %>
+        <% if @counts[status].to_i > 0 %><span class="status-tabs__count"><%= @counts[status] %></span><% end %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if @rentals.any? %>
+    <div class="rental-rows">
+      <% @rentals.each do |rental| %>
+        <%= render "shared/rental_row", rental: rental, role: :borrower %>
+      <% end %>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state",
+          icon_name: "image",
+          title: "No #{@status} borrows",
+          description: "Items you request to borrow will show up here." %>
+  <% end %>
+</div>

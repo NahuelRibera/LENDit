@@ -1,0 +1,36 @@
+<% content_for :title, "My products — LENDit" %>
+
+<div class="container section">
+  <div class="section__header">
+    <h1 class="section__title">My products</h1>
+    <%= link_to "List an item", new_listing_path, class: "btn btn--primary btn--sm" %>
+  </div>
+
+  <% if @listings.any? %>
+    <div class="owner-listings">
+      <% @listings.each do |listing| %>
+        <%= link_to edit_listing_path(listing), class: "owner-listing-row" do %>
+          <div class="owner-listing-row__media">
+            <% if (image = listing.primary_image) && image.file.attached? %>
+              <%= image_tag image.file.variant(resize_to_fill: [120, 90]), alt: listing.title %>
+            <% else %>
+              <%= icon("image", size: 20) %>
+            <% end %>
+          </div>
+          <div class="owner-listing-row__body">
+            <p class="owner-listing-row__title"><%= listing.title %></p>
+            <p class="owner-listing-row__meta"><%= listing.category.name %> · <%= format_price(listing.price_cents) %>/day</p>
+          </div>
+          <%= render "shared/status_badge", label: listing.status.capitalize, tone: listing_status_tone(listing.status) %>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state",
+          icon_name: "image",
+          title: "You haven't listed anything yet",
+          description: "List something you own but don't use every day and start earning from it.",
+          action_text: "List an item",
+          action_href: new_listing_path %>
+  <% end %>
+</div>

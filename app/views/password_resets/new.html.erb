@@ -1,0 +1,21 @@
+<% content_for :title, "Reset your password — LENDit" %>
+
+<div class="container auth-page">
+  <div class="auth-card">
+    <h1 class="auth-card__title">Reset your password</h1>
+    <p class="auth-card__subtitle">Enter your email and we'll send you a link to choose a new password.</p>
+
+    <%= form_with url: password_reset_path, method: :post do %>
+      <div class="field">
+        <label class="field__label" for="email">Email</label>
+        <input type="email" name="email" id="email" class="input" required autofocus autocomplete="email">
+      </div>
+
+      <%= button_tag "Send reset instructions", class: "btn btn--primary btn--block", type: "submit" %>
+    <% end %>
+
+    <p class="auth-card__footer">
+      <%= link_to "Back to log in", new_session_path %>
+    </p>
+  </div>
+</div>

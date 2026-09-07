@@ -1,0 +1,35 @@
+<% content_for :title, "#{@conversation.other_participant(current_user).full_name} — LENDit" %>
+<% other = @conversation.other_participant(current_user) %>
+
+<div class="container section">
+  <div class="conversation-layout">
+    <%= render "conversation_list", conversations: @conversations, active_conversation: @conversation %>
+
+    <div class="conversation-thread" data-controller="chat" data-chat-current-user-id-value="<%= current_user.id %>">
+      <div class="conversation-thread__header">
+        <%= link_to "Back", conversations_path, class: "conversation-thread__back" %>
+        <%= link_to user_path(other), class: "conversation-thread__participant" do %>
+          <%= render "shared/avatar",
+                name: other.full_name,
+                image_url: (other.avatar.attached? ? url_for(other.avatar.variant(resize_to_fill: [64, 64])) : nil),
+                size: :sm %>
+          <strong><%= other.full_name %></strong>
+        <% end %>
+        <%= link_to @conversation.listing.title, listing_path(@conversation.listing), class: "conversation-thread__listing-link" %>
+      </div>
+
+      <%= turbo_stream_from @conversation %>
+
+      <div class="conversation-thread__messages" data-chat-target="messages" id="messages">
+        <% @conversation.messages.each do |message| %>
+          <%= render "messages/message", message: message %>
+        <% end %>
+      </div>
+
+      <%= form_with model: @message, url: conversation_messages_path(@conversation), class: "conversation-thread__composer" do |f| %>
+        <%= f.text_area :body, class: "textarea conversation-thread__input", placeholder: "Type a message…", required: true, rows: 1 %>
+        <%= f.submit "Send", class: "btn btn--primary btn--sm" %>
+      <% end %>
+    </div>
+  </div>
+</div>

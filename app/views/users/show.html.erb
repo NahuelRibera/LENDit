@@ -1,0 +1,43 @@
+<% content_for :title, "#{@user.full_name} — LENDit" %>
+
+<div class="container section">
+  <div class="profile-header">
+    <%= render "shared/avatar",
+          name: @user.full_name,
+          image_url: (@user.avatar.attached? ? url_for(@user.avatar.variant(resize_to_fill: [128, 128])) : nil),
+          size: :lg %>
+    <div class="profile-header__info">
+      <h1 class="profile-header__name"><%= @user.full_name %></h1>
+      <p class="profile-header__meta">
+        <% if @user.city.present? %>
+          <%= icon("map-pin", size: 14) %> <%= @user.city %>
+        <% end %>
+        <span>Member since <%= @user.created_at.strftime("%B %Y") %></span>
+      </p>
+      <%= render "shared/rating", rating: @user.ratings_avg, reviews_count: @user.ratings_count, size: :sm %>
+    </div>
+  </div>
+
+  <% if @user.bio.present? %>
+    <p class="profile-bio"><%= @user.bio %></p>
+  <% end %>
+
+  <section class="profile-listings">
+    <h2 class="listing-form-page__subheading">
+      <%= @user == current_user ? "Your listings" : "#{@user.first_name}'s listings" %>
+    </h2>
+
+    <% if @listings.any? %>
+      <div class="grid-cards">
+        <% @listings.each do |listing| %>
+          <%= render "shared/listing_card", listing: listing %>
+        <% end %>
+      </div>
+    <% else %>
+      <%= render "shared/empty_state",
+            icon_name: "image",
+            title: "No listings yet",
+            description: "#{@user == current_user ? "You haven't" : "#{@user.first_name} hasn't"} published anything to lend yet." %>
+    <% end %>
+  </section>
+</div>

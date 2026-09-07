@@ -1,0 +1,30 @@
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <%= image_tag "logo.png", alt: "LENDit", class: "footer__logo" %>
+      <p class="footer__tagline">Borrow what you need. Lend what you don't.</p>
+    </div>
+
+    <div class="footer__columns">
+      <div class="footer__column">
+        <h3 class="footer__heading">Marketplace</h3>
+        <ul>
+          <li><a href="#">Browse listings</a></li>
+          <li><a href="#">Categories</a></li>
+          <li><a href="#">How it works</a></li>
+        </ul>
+      </div>
+      <div class="footer__column">
+        <h3 class="footer__heading">Company</h3>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <p>&copy; <%= Date.current.year %> LENDit. All rights reserved.</p>
+  </div>
+</footer>

@@ -1,0 +1,11 @@
+first_message:
+  conversation: vive_thread
+  sender: marti
+  body: "Hey, does it include a second battery?"
+  created_at: <%= 2.hours.ago %>
+
+reply_message:
+  conversation: vive_thread
+  sender: elena
+  body: "Yes, it comes with two batteries!"
+  created_at: <%= 1.hour.ago %>

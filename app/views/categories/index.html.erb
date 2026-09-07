@@ -1,0 +1,16 @@
+<% content_for :title, "Browse categories — LENDit" %>
+
+<div class="container section">
+  <div class="section__header">
+    <h1 class="section__title">Categories</h1>
+  </div>
+
+  <div class="grid-categories">
+    <% @categories.each do |category| %>
+      <%= link_to category_path(category.slug), class: "category-tile" do %>
+        <span class="category-tile__icon"><%= icon(category.icon_key, size: 22) %></span>
+        <span class="category-tile__name"><%= category.name %></span>
+      <% end %>
+    <% end %>
+  </div>
+</div>

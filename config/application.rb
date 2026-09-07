@@ -16,6 +16,12 @@ module LenditV2
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
 
+    # Rentals use a PostgreSQL EXCLUDE constraint (see the rentals migration)
+    # to guarantee no two accepted/active bookings can overlap for the same
+    # listing. Exclusion constraints have no representation in schema.rb, so
+    # the schema is dumped as raw SQL to keep a fresh db:schema:load faithful.
+    config.active_record.schema_format = :sql
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

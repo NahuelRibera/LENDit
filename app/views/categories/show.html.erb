@@ -1,0 +1,22 @@
+<% content_for :title, "#{@category.name} — LENDit" %>
+
+<div class="container section">
+  <div class="section__header">
+    <h1 class="section__title"><%= @category.name %></h1>
+  </div>
+
+  <% if @listings.any? %>
+    <div class="grid-cards">
+      <% @listings.each do |listing| %>
+        <%= render "shared/listing_card", listing: listing %>
+      <% end %>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state",
+          icon_name: "image",
+          title: "No listings in #{@category.name} yet",
+          description: "Check back soon, or explore another category.",
+          action_text: "Browse all categories",
+          action_href: categories_path %>
+  <% end %>
+</div>

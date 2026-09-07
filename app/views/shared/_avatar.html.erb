@@ -1,0 +1,9 @@
+<%# locals: (name:, image_url: nil, size: :md) %>
+<span class="avatar avatar--<%= size %>">
+  <% if image_url.present? %>
+    <%= image_tag image_url, alt: name, class: "avatar__image" %>
+  <% else %>
+    <span aria-hidden="true"><%= name.to_s.split.map { |part| part[0] }.first(2).join.upcase %></span>
+    <span class="visually-hidden"><%= name %></span>
+  <% end %>
+</span>

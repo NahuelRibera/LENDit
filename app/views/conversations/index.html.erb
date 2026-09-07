@@ -1,0 +1,14 @@
+<% content_for :title, "Messages — LENDit" %>
+
+<div class="container section">
+  <div class="conversation-layout">
+    <%= render "conversation_list", conversations: @conversations, active_conversation: nil %>
+
+    <div class="conversation-thread conversation-thread--empty">
+      <%= render "shared/empty_state",
+            icon_name: "image",
+            title: "Select a conversation",
+            description: "Choose a conversation from the list to view it." %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+cameras:
+  name: Cameras
+  slug: cameras
+  icon_key: camera
+  position: 1
+
+fashion:
+  name: Fashion
+  slug: fashion
+  icon_key: tag
+  position: 2
+
+sports:
+  name: Sports
+  slug: sports
+  icon_key: activity
+  position: 3
+
+audio:
+  name: Audio
+  slug: audio
+  icon_key: headphones
+  position: 4
+
+consoles:
+  name: Consoles
+  slug: consoles
+  icon_key: tv
+  position: 5
+
+furniture:
+  name: Furniture
+  slug: furniture
+  icon_key: home
+  position: 6
+
+tools:
+  name: Tools
+  slug: tools
+  icon_key: tool
+  position: 7
+
+music:
+  name: Music
+  slug: music
+  icon_key: music
+  position: 8

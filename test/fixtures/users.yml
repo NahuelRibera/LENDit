@@ -1,0 +1,27 @@
+marti:
+  email: marti@example.com
+  password_digest: <%= BCrypt::Password.create("password123") %>
+  first_name: Marti
+  last_name: Carmona
+  city: Barcelona
+  bio: Photographer and gear collector.
+  ratings_count: 3
+  ratings_avg: "4.5"
+
+elena:
+  email: elena@example.com
+  password_digest: <%= BCrypt::Password.create("password123") %>
+  first_name: Elena
+  last_name: Ruiz
+  city: Madrid
+  ratings_count: 12
+  ratings_avg: "4.8"
+
+nahuel:
+  email: nahuel@example.com
+  password_digest: <%= BCrypt::Password.create("password123") %>
+  first_name: Nahuel
+  last_name: Ribera
+  city: Valencia
+  ratings_count: 0
+  ratings_avg: "0.0"

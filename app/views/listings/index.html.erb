@@ -1,0 +1,99 @@
+<% content_for :title, (params[:q].present? ? "“#{params[:q]}” — LENDit" : "Browse listings — LENDit") %>
+<% current_sort = params[:sort].presence || (params[:q].present? ? "relevance" : "newest") %>
+
+<div class="container section" data-controller="filters">
+  <div class="section__header">
+    <h1 class="section__title">
+      <%= params[:q].present? ? "Results for “#{params[:q]}”" : "Browse listings" %>
+    </h1>
+    <button type="button" class="btn btn--secondary btn--sm browse-filters-toggle" data-action="filters#toggle">
+      Filters
+    </button>
+  </div>
+
+  <div class="browse-layout">
+    <aside class="browse-filters" data-filters-target="panel">
+      <%= form_with url: listings_path, method: :get, class: "browse-filters__form" do %>
+        <%= hidden_field_tag :q, params[:q] %>
+
+        <div class="field">
+          <label class="field__label" for="category_id">Category</label>
+          <select name="category_id" id="category_id" class="select">
+            <option value="">All categories</option>
+            <% @categories.each do |category| %>
+              <option value="<%= category.id %>" <%= "selected" if params[:category_id].to_s == category.id.to_s %>><%= category.name %></option>
+            <% end %>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="condition">Condition</label>
+          <select name="condition" id="condition" class="select">
+            <option value="">Any condition</option>
+            <% Listing::CONDITIONS.each do |condition| %>
+              <option value="<%= condition %>" <%= "selected" if params[:condition] == condition %>><%= condition.tr("_", " ").capitalize %></option>
+            <% end %>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="city">City</label>
+          <input type="text" name="city" id="city" class="input" value="<%= params[:city] %>" placeholder="e.g. Barcelona">
+        </div>
+
+        <div class="field">
+          <span class="field__label">Price per day (€)</span>
+          <div class="field-row">
+            <input type="number" name="price_min" class="input" min="0" step="1" value="<%= params[:price_min] %>" placeholder="Min">
+            <input type="number" name="price_max" class="input" min="0" step="1" value="<%= params[:price_max] %>" placeholder="Max">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="min_owner_rating">Owner rating</label>
+          <select name="min_owner_rating" id="min_owner_rating" class="select">
+            <option value="">Any rating</option>
+            <% [4.5, 4.0, 3.0].each do |rating| %>
+              <option value="<%= rating %>" <%= "selected" if params[:min_owner_rating].to_s == rating.to_s %>><%= rating %>+ stars</option>
+            <% end %>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="sort">Sort by</label>
+          <select name="sort" id="sort" class="select">
+            <% if params[:q].present? %>
+              <option value="relevance" <%= "selected" if current_sort == "relevance" %>>Relevance</option>
+            <% end %>
+            <option value="newest" <%= "selected" if current_sort == "newest" %>>Newest</option>
+            <option value="price_asc" <%= "selected" if current_sort == "price_asc" %>>Price: low to high</option>
+            <option value="price_desc" <%= "selected" if current_sort == "price_desc" %>>Price: high to low</option>
+            <option value="rating_desc" <%= "selected" if current_sort == "rating_desc" %>>Owner rating</option>
+          </select>
+        </div>
+
+        <%= button_tag "Apply filters", type: "submit", class: "btn btn--primary btn--block" %>
+        <%= link_to "Clear filters", listings_path, class: "browse-filters__clear" %>
+      <% end %>
+    </aside>
+
+    <div class="browse-results">
+      <% if @listings.any? %>
+        <p class="browse-results__count"><%= pluralize(@pagy.count, "listing") %> found</p>
+        <div class="grid-cards">
+          <% @listings.each do |listing| %>
+            <%= render "shared/listing_card", listing: listing %>
+          <% end %>
+        </div>
+        <%= render "shared/pagination", pagy: @pagy %>
+      <% else %>
+        <%= render "shared/empty_state",
+              icon_name: "search",
+              title: "No listings match your search",
+              description: "Try a different keyword or clear your filters.",
+              action_text: "Clear filters",
+              action_href: listings_path %>
+      <% end %>
+    </div>
+  </div>
+</div>
